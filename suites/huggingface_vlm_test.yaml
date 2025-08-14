@@ -1,9 +1,9 @@
-name: huggingface_test
+name: huggingface_vlm_test
 device: local
-description: "Test models from Hugging Face Hub"
+description: "Test VLM models from Hugging Face Hub"
 
 adapter_config:
-  model_name: "microsoft/DialoGPT-medium"  # or any other HF model
+  model_name: "deepseek-ai/deepseek-vl-7b-base"  # or any other HF model
   precision: "fp32"  # or "fp16" for GPU
   max_new_tokens: 50
   temperature: 0.7

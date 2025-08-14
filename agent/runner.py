@@ -52,11 +52,9 @@ class LocalAgentRunner:
         try:
             # Run inference pipeline with staging
             with self.latency_probe.stage("prepare"):
-                print("  📋 Preparing sample...")
                 prepared = self.adapter.prepare(sample)
             
             with self.latency_probe.stage("infer"):
-                print("  🤖 Running inference...")
                 # Sample memory and util during inference
                 self.memory_probe.sample()
                 self.util_probe.sample()
@@ -64,7 +62,6 @@ class LocalAgentRunner:
                 raw_output = self.adapter.infer(prepared)
             
             with self.latency_probe.stage("postprocess"):
-                print("  ✨ Post-processing...")
                 output = self.adapter.postprocess(raw_output)
             
             t_end = time.time()
@@ -96,11 +93,11 @@ class LocalAgentRunner:
                 "config": config
             }
             
-            print(f"  ✅ Trial completed in {trial_record['timing']['total_ms']:.1f}ms")
+            print(f"  Trial completed: {trial_record['timing']['total_ms']:.1f}ms")
             return trial_record
             
         except Exception as e:
-            print(f"  ❌ Trial failed: {e}")
+            print(f"  Trial failed: {e}")
             # Stop probes even on error
             self.latency_probe.stop()
             self.power_probe.stop()
@@ -117,7 +114,7 @@ class LocalAgentRunner:
     
     def warmup(self, config: Dict[str, Any], num_warmups: int = 3):
         """Run warmup trials to stabilize system (optimized for local)"""
-        print(f"🔥 Running {num_warmups} warmup trials...")
+        print(f"Running {num_warmups} warmup trials...")
         
         # Create a simple dummy sample for warmup
         dummy_sample = {
@@ -131,14 +128,12 @@ class LocalAgentRunner:
             self.run_trial(dummy_sample, config)
             time.sleep(0.2)  # Brief pause between warmups
         
-        print("✅ Warmup completed")
+        print("Warmup completed")
     
     def run_suite(self, suite_config: Dict[str, Any], output_dir: Path) -> Dict[str, Any]:
         """Run a complete evaluation suite locally"""
         output_dir.mkdir(parents=True, exist_ok=True)
         
-        print(f"🎯 Running suite: {suite_config['name']}")
-        print(f"📁 Output directory: {output_dir}")
         
         # Warmup phase
         if suite_config.get("run", {}).get("warmup", 0) > 0:
@@ -148,14 +143,14 @@ class LocalAgentRunner:
         # Execute tasks
         all_results = {}
         for task in suite_config.get("tasks", []):
-            print(f"\n📋 Task: {task['id']}")
+            print(f"\nTask: {task['id']}")
             task_results = self._run_task(task, suite_config, output_dir)
             all_results[task["id"]] = task_results
         
         # Save results
         self._save_results(all_results, output_dir)
         
-        print(f"\n🎉 Suite completed! Results saved to {output_dir}")
+        print(f"\n Results saved to {output_dir}")
         return all_results
     
     def _run_task(self, task: Dict[str, Any], suite_config: Dict[str, Any], 

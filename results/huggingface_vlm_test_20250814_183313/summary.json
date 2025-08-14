@@ -1,0 +1,51 @@
+{
+  "platform": "macos",
+  "timestamp": 1755210805.148494,
+  "tasks": [
+    "vlm_captioning",
+    "vlm_question_answering"
+  ],
+  "total_trials": 10,
+  "metrics": {
+    "vlm_captioning": {
+      "quality": {},
+      "deployability": {
+        "ttft_ms_avg": 0.0,
+        "ttft_ms_p50": 0.0,
+        "ttft_ms_p95": 0.0,
+        "e2e_ms_avg": 615.217113494873,
+        "e2e_ms_p50": 616.1861419677734,
+        "e2e_ms_p95": 618.2470321655273,
+        "tps_avg": 0.0,
+        "tps_p50": 0.0,
+        "tps_p95": 0.0,
+        "power_w_avg": 0.0,
+        "power_w_max": 0.0,
+        "memory_mb_avg": 0.0,
+        "memory_mb_max": 0.0,
+        "gpu_util_pct_avg": 0.0,
+        "cpu_util_pct_avg": 0.0
+      }
+    },
+    "vlm_question_answering": {
+      "quality": {},
+      "deployability": {
+        "ttft_ms_avg": 0.0,
+        "ttft_ms_p50": 0.0,
+        "ttft_ms_p95": 0.0,
+        "e2e_ms_avg": 612.2043609619141,
+        "e2e_ms_p50": 612.5402450561523,
+        "e2e_ms_p95": 613.8312816619873,
+        "tps_avg": 0.0,
+        "tps_p50": 0.0,
+        "tps_p95": 0.0,
+        "power_w_avg": 0.0,
+        "power_w_max": 0.0,
+        "memory_mb_avg": 0.0,
+        "memory_mb_max": 0.0,
+        "gpu_util_pct_avg": 0.0,
+        "cpu_util_pct_avg": 0.0
+      }
+    }
+  }
+}

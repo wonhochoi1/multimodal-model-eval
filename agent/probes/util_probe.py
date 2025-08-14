@@ -22,20 +22,17 @@ class UtilProbe:
     def _sample_loop(self):
         """Background sampling loop"""
         while self.sampling:
-            try:
-                sample = {
-                    "timestamp": time.time(),
-                    "cpu_util_pct": psutil.cpu_percent(interval=0.1),
-                    "ram_util_pct": psutil.virtual_memory().percent,
-                    "ram_mb": psutil.virtual_memory().used / (1024 * 1024),
-                    "gpu_util_pct": self._get_gpu_util(),
-                    "gpu_mem_pct": self._get_gpu_mem()
-                }
-                self.samples.append(sample)
-                time.sleep(1.0 / self.sample_rate_hz)
-            except Exception as e:
-                print(f"⚠️  Util probe sampling error: {e}")
-                break
+            sample = {
+                "timestamp": time.time(),
+                "cpu_util_pct": psutil.cpu_percent(interval=0.1),
+                "ram_util_pct": psutil.virtual_memory().percent,
+                "ram_mb": psutil.virtual_memory().used / (1024 * 1024),
+                "gpu_util_pct": self._get_gpu_util(),
+                "gpu_mem_pct": self._get_gpu_mem()
+            }
+            self.samples.append(sample)
+            time.sleep(1.0 / self.sample_rate_hz)
+
     
     def _get_gpu_util(self) -> float:
         """Get GPU utilization percentage (local fallbacks)"""
