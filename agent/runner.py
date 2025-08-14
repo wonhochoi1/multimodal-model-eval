@@ -9,6 +9,8 @@ from agent.probes.power_probe import PowerProbe
 from agent.probes.util_probe import UtilProbe
 from agent.probes.memory_probe import MemoryProbe
 from agent.adapters.base import Adapter
+from metrics.accuracy import QualityMetrics
+from metrics.deployability import DeployabilityMetrics
 
 class LocalAgentRunner:
     """Agent runner for local laptop/macOS development"""
@@ -210,8 +212,8 @@ class LocalAgentRunner:
         return samples
     
     def _save_results(self, all_results: Dict[str, List], output_dir: Path):
-        """Save results in a local-friendly format"""
-        # Save raw results
+        """Save results and compute metrics"""
+        # Save raw results (existing code)
         raw_dir = output_dir / "raw"
         raw_dir.mkdir(exist_ok=True)
         
@@ -221,23 +223,54 @@ class LocalAgentRunner:
                 for trial in trials:
                     f.write(json.dumps(trial) + "\n")
         
+        # NEW: Compute metrics
+        metrics = self._compute_metrics(all_results)
+        
+        # Save metrics
+        metrics_file = output_dir / "metrics.json"
+        with open(metrics_file, "w") as f:
+            json.dump(metrics, f, indent=2)
+        
         # Save summary
         summary = {
             "platform": self.platform,
             "timestamp": time.time(),
             "tasks": list(all_results.keys()),
-            "total_trials": sum(len(trials) for trials in all_results.values())
+            "total_trials": sum(len(trials) for trials in all_results.values()),
+            "metrics": metrics  # Include computed metrics
         }
         
         with open(output_dir / "summary.json", "w") as f:
             json.dump(summary, f, indent=2)
-
-# Backward compatibility
-def run_trial(task_cfg, model_cfg, probes, adapter):
-    """Legacy function for backward compatibility"""
-    print("⚠️  Using legacy run_trial function. Consider using LocalAgentRunner instead.")
     
-    # Create a local runner and use it
-    runner = LocalAgentRunner(adapter)
-    sample = {"id": "legacy", "data": task_cfg}
-    return runner.run_trial(sample, model_cfg)
+    def _compute_metrics(self, all_results: Dict[str, List]) -> Dict[str, Any]:
+        """Compute quality and deployability metrics"""
+        metrics = {}
+        
+        for task_id, trials in all_results.items():
+            task_metrics = {
+                "quality": {},
+                "deployability": {}
+            }
+            
+            # Quality metrics (if reference data exists)
+            if any("refs" in trial for trial in trials):
+                task_metrics["quality"]["exact_match"] = QualityMetrics.compute_exact_match(trials)
+            
+            # Deployability metrics (always available)
+            task_metrics["deployability"].update(
+                DeployabilityMetrics.compute_ttft_ms(trials)
+            )
+            task_metrics["deployability"].update(
+                DeployabilityMetrics.compute_e2e_ms(trials)
+            )
+            task_metrics["deployability"].update(
+                DeployabilityMetrics.compute_tps(trials)
+            )
+            task_metrics["deployability"].update(
+                DeployabilityMetrics.compute_resource_metrics(trials)
+            )
+            
+            metrics[task_id] = task_metrics
+        
+        return metrics
