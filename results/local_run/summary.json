@@ -1,0 +1,9 @@
+{
+  "platform": "macos",
+  "timestamp": 1755151095.429307,
+  "tasks": [
+    "vlm_captioning",
+    "vlm_question_answering"
+  ],
+  "total_trials": 10
+}

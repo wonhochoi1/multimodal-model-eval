@@ -1,0 +1,32 @@
+name: huggingface_vlm_test
+device: local
+description: "Test VLM models from Hugging Face Hub"
+
+adapter_config:
+  model_name: "microsoft/DialoGPT-medium"  # or any other HF model
+  precision: "fp32"  # or "fp16" for GPU
+  max_new_tokens: 50
+  temperature: 0.7
+
+run:
+  warmup: 3
+  repeats: 5
+  max_concurrency: 1
+  sample_rate_hz: 2
+
+tasks:
+  - id: vlm_captioning
+    type: vlm_caption
+    prompt: "Describe what you see in this image in detail"
+    image: "/mock/path/to/test_image.jpg"
+    metrics:
+      quality: [exact_match, bleu_score]
+      deployability: [ttft_ms, e2e_ms, tps, memory_mb, gpu_util_pct]
+  
+  - id: vlm_question_answering
+    type: vlm_caption
+    prompt: "What objects can you identify in this image?"
+    image: "/mock/path/to/test_image.jpg"
+    metrics:
+      quality: [exact_match]
+      deployability: [ttft_ms, e2e_ms, memory_mb]

@@ -1,0 +1,48 @@
+# Core dependencies for the multimodal evaluation system
+# Core Python packages
+typer>=0.9.0                    # CLI framework
+pyyaml>=6.0                     # YAML configuration parsing
+psutil>=5.9.0                   # System monitoring (CPU, memory, etc.)
+
+# Data handling and analysis
+numpy>=1.21.0                   # Numerical computing
+pandas>=1.3.0                   # Data manipulation and analysis
+scipy>=1.7.0                    # Scientific computing
+
+# Machine Learning and AI
+torch>=1.12.0                   # PyTorch for model inference
+transformers>=4.21.0            # Hugging Face transformers
+tokenizers>=0.13.0              # Fast tokenization
+accelerate>=0.20.0              # Hugging Face acceleration
+
+# Image and media processing
+Pillow>=9.0.0                   # Image processing
+opencv-python>=4.6.0            # Computer vision
+imageio>=2.19.0                 # Image I/O
+
+# Audio processing
+librosa>=0.9.0                  # Audio analysis
+soundfile>=0.10.0               # Audio file I/O
+
+# GPU monitoring (optional, for NVIDIA GPUs)
+pynvml>=11.0.0                  # NVIDIA Management Library
+
+
+# Development and testing
+pytest>=7.0.0                   # Testing framework
+pytest-cov>=4.0.0               # Coverage testing
+black>=22.0.0                   # Code formatting
+flake8>=5.0.0                   # Linting
+mypy>=0.991                     # Type checking
+
+# Jupyter and visualization (optional)
+jupyter>=1.0.0                  # Jupyter notebooks
+matplotlib>=3.5.0               # Plotting
+seaborn>=0.11.0                 # Statistical visualization
+plotly>=5.0.0                   # Interactive plots
+
+# Utilities
+tqdm>=4.64.0                    # Progress bars
+colorama>=0.4.5                 # Cross-platform colored terminal text
+rich>=12.0.0                    # Rich text and formatting
+click>=8.0.0                    # Command line interface creation

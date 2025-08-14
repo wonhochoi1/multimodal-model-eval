@@ -1,0 +1,19 @@
+name: local_development_test
+device: local
+description: "Local development and testing suite for laptop/macOS"
+
+adapter_config:
+  model_type: "local_test"
+  precision: "fp32"
+
+run:
+  warmup: 2
+  repeats: 5
+  max_concurrency: 1
+  sample_rate_hz: 2
+
+tasks:
+  - id: vlm_captioning
+    type: vlm_caption
+    prompt: "Describe what you see in this image"
+    image: "/mock/path/to/test_image.jpg"
