@@ -1,0 +1,30 @@
+{
+  "platform": "macos",
+  "timestamp": 1755230182.334191,
+  "tasks": [
+    "vlm_caption_task"
+  ],
+  "total_trials": 5,
+  "metrics": {
+    "vlm_caption_task": {
+      "quality": {},
+      "deployability": {
+        "ttft_ms_avg": 1.0965824127197266,
+        "ttft_ms_p50": 1.1658668518066406,
+        "ttft_ms_p95": 1.5370845794677734,
+        "e2e_ms_avg": 168.30768585205078,
+        "e2e_ms_p50": 169.41308975219727,
+        "e2e_ms_p95": 173.4638214111328,
+        "tps_avg": 22.765005765230054,
+        "tps_p50": 23.745935770597143,
+        "tps_p95": 25.335074968325902,
+        "power_w_avg": 0.0,
+        "power_w_max": 0.0,
+        "memory_mb_avg": 14606.246875,
+        "memory_mb_max": 14705.75,
+        "gpu_util_pct_avg": 9.86,
+        "cpu_util_pct_avg": 14.26
+      }
+    }
+  }
+}

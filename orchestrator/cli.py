@@ -7,7 +7,6 @@ import re
 app = typer.Typer(help="Multimodal evaluation CLI - Local Development Focus")
 
 def create_unique_output_dir(suite_name: str, base_dir: Path = Path("results")) -> Path:
-    """Create a unique output directory for each suite run"""
 
     dir_name = re.sub(r'[^a-zA-Z0-9_-]', '_', suite_name)
     
@@ -26,7 +25,6 @@ def create_unique_output_dir(suite_name: str, base_dir: Path = Path("results")) 
 
 @app.command()
 def run(suite: Path, out: Optional[Path] = typer.Option(None, help="Custom output directory")):
-    """Execute a suite YAML locally on your laptop/macOS"""
     
     with open(suite) as f: 
         cfg = yaml.safe_load(f)
@@ -52,10 +50,8 @@ def run(suite: Path, out: Optional[Path] = typer.Option(None, help="Custom outpu
 
 @app.command()
 def test():
-    """Run a quick local test to verify everything works"""
-    typer.echo("�� Running local test...")
+    typer.echo("Running local test")
     
-    # Create a minimal test suite
     test_suite = {
         "name": "local_test",
         "device": "local",
@@ -69,14 +65,12 @@ def test():
         ]
     }
     
-    # Run it
     from agent.runner import LocalAgentRunner
     from agent.adapters.registry import get_adapter
     
     adapter = get_adapter(test_suite)
     runner = LocalAgentRunner(adapter)
     
-    # Create unique test directory
     test_dir = create_unique_output_dir("test_run")
     results = runner.run_suite(test_suite, test_dir)
 
@@ -120,7 +114,6 @@ def results():
 
 @app.command()
 def clean():
-    """Clean old results directories (keep last 5)"""
     results_dir = Path("results")
     if not results_dir.exists():
         typer.echo("No results directory found")
@@ -144,7 +137,7 @@ def clean():
         typer.echo("No old results")
         return
     
-    typer.echo(f"Cleaning {len(to_remove)} old result directories...")
+    typer.echo(f"Cleaning {len(to_remove)} old result directories")
     
     for dir_path, _ in to_remove:
         try:

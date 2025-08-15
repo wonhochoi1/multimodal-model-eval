@@ -1,0 +1,51 @@
+{
+  "platform": "macos",
+  "timestamp": 1755230260.955411,
+  "tasks": [
+    "vlm_captioning",
+    "vlm_question_answering"
+  ],
+  "total_trials": 10,
+  "metrics": {
+    "vlm_captioning": {
+      "quality": {},
+      "deployability": {
+        "ttft_ms_avg": 1.755380630493164,
+        "ttft_ms_p50": 1.9249916076660156,
+        "ttft_ms_p95": 2.045869827270508,
+        "e2e_ms_avg": 168.25237274169922,
+        "e2e_ms_p50": 159.2881679534912,
+        "e2e_ms_p95": 213.52100372314453,
+        "tps_avg": 23.16515186860451,
+        "tps_p50": 24.73089413037614,
+        "tps_p95": 27.62454678675514,
+        "power_w_avg": 0.0,
+        "power_w_max": 0.0,
+        "memory_mb_avg": 14192.05,
+        "memory_mb_max": 14200.5,
+        "gpu_util_pct_avg": 6.26,
+        "cpu_util_pct_avg": 11.78
+      }
+    },
+    "vlm_question_answering": {
+      "quality": {},
+      "deployability": {
+        "ttft_ms_avg": 1.9922256469726562,
+        "ttft_ms_p50": 1.9481182098388672,
+        "ttft_ms_p95": 2.4156570434570312,
+        "e2e_ms_avg": 161.05360984802246,
+        "e2e_ms_p50": 159.93690490722656,
+        "e2e_ms_p95": 164.84880447387695,
+        "tps_avg": 23.89044096068375,
+        "tps_p50": 24.70234622888063,
+        "tps_p95": 25.847287741299358,
+        "power_w_avg": 0.0,
+        "power_w_max": 0.0,
+        "memory_mb_avg": 14193.040625,
+        "memory_mb_max": 14197.109375,
+        "gpu_util_pct_avg": 8.64,
+        "cpu_util_pct_avg": 15.28
+      }
+    }
+  }
+}

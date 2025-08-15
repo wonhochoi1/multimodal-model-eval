@@ -1,11 +1,3 @@
-# agent/adapters/vlm_example.py
-# Generic Hugging Face VLM adapter with:
-# - config-first discovery
-# - optional preloading of vendor modules to register custom classes
-# - processor-first input building
-# - streaming generation for TTFT
-# No model-specific branches.
-
 import os
 import time
 import uuid
@@ -56,7 +48,6 @@ def _issubclass_safe(obj, base):
 
 
 def _walk_submodules(root_mod) -> Iterable[object]:
-    """Yield the root module and all importable submodules (best-effort)."""
     yield root_mod
     if hasattr(root_mod, "__path__"):
         prefix = root_mod.__name__ + "."
@@ -65,11 +56,6 @@ def _walk_submodules(root_mod) -> Iterable[object]:
             yield importlib.import_module(name)
 
 def _auto_register_transformers_types(preloaded_module_names: Iterable[str]) -> None:
-    """
-    Generic: find any PretrainedConfig / PreTrainedModel in the given modules
-    and register them with AutoConfig/AutoModel/AutoModelForCausalLM.
-    This avoids hardcoding model names or class symbols.
-    """
     for mod_name in preloaded_module_names or []:
         mod = importlib.import_module(mod_name)
         for sub in _walk_submodules(mod):
@@ -86,17 +72,6 @@ def _auto_register_transformers_types(preloaded_module_names: Iterable[str]) -> 
                         AutoModelForCausalLM.register(cfg_cls, obj)
 
 class HuggingFaceVLMAdapter(Adapter):
-    """
-    Adaptive, model-agnostic VLM adapter.
-
-    Key behavior (generic):
-      - Optionally import vendor modules listed in config['preload_modules'] BEFORE touching HF APIs.
-        This lets vendor packages register custom config/model classes with transformers.
-      - Discover capabilities from AutoConfig (no weights first).
-      - Load AutoModel(ForCausalLM)/AutoProcessor/AutoTokenizer with trust_remote_code=True.
-      - Build inputs via Processor where available (multimodal-safe).
-      - Stream tokens to measure TTFT.
-    """
 
     name = "HuggingFaceVLM"
     modalities = ["image", "text"]
@@ -406,7 +381,7 @@ class HuggingFaceVLMAdapter(Adapter):
         if inputs is None:
             inputs = self.tokenizer(prompt, return_tensors="pt")
 
-        # Move to device
+        # to device
         if hasattr(inputs, "to"):
             inputs = inputs.to(self.model.device)
         elif isinstance(inputs, dict):
@@ -519,7 +494,7 @@ class HuggingFaceVLMAdapter(Adapter):
         raise NotImplementedError("Audio inference not implemented in this adapter")
     
     def vlm_generate(self, prompt, media, stream=True, on_token=None, **kw):
-        # Use the main inference pipeline
+        # main inference pipeline
         sample = {"prompt": prompt, "image": media.get("image", "")}
         prepared = self.prepare(sample)
         raw_output = self.infer(prepared)

@@ -25,7 +25,6 @@ class LocalAgentRunner:
         self.platform = self._detect_platform()
     
     def _detect_platform(self) -> str:
-        """Detect the current platform for appropriate probe selection"""
         import platform
         system = platform.system().lower()
         if system == "darwin":
@@ -36,7 +35,6 @@ class LocalAgentRunner:
             return "linux"
     
     def run_trial(self, sample: Dict[str, Any], config: Dict[str, Any]) -> Dict[str, Any]:
-        """Run a single trial with full instrumentation optimized for local development"""
         trial_id = str(uuid.uuid4())
         
         print(f"Running trial {trial_id[:8]}:")
@@ -94,7 +92,6 @@ class LocalAgentRunner:
     
     
     def run_suite(self, suite_config: Dict[str, Any], output_dir: Path) -> Dict[str, Any]:
-        """Run a complete evaluation suite locally"""
         output_dir.mkdir(parents=True, exist_ok=True)
         
         all_results = {}
@@ -160,8 +157,7 @@ class LocalAgentRunner:
         return samples
     
     def _save_results(self, all_results: Dict[str, List], output_dir: Path):
-        """Save results and compute metrics"""
-        # Save raw results (existing code)
+
         raw_dir = output_dir / "raw"
         raw_dir.mkdir(exist_ok=True)
         
@@ -171,28 +167,24 @@ class LocalAgentRunner:
                 for trial in trials:
                     f.write(json.dumps(trial) + "\n")
         
-        # NEW: Compute metrics
         metrics = self._compute_metrics(all_results)
         
-        # Save metrics
         metrics_file = output_dir / "metrics.json"
         with open(metrics_file, "w") as f:
             json.dump(metrics, f, indent=2)
         
-        # Save summary
         summary = {
             "platform": self.platform,
             "timestamp": time.time(),
             "tasks": list(all_results.keys()),
             "total_trials": sum(len(trials) for trials in all_results.values()),
-            "metrics": metrics  # Include computed metrics
+            "metrics": metrics
         }
         
         with open(output_dir / "summary.json", "w") as f:
             json.dump(summary, f, indent=2)
     
     def _compute_metrics(self, all_results: Dict[str, List]) -> Dict[str, Any]:
-        """Compute quality and deployability metrics"""
         metrics = {}
         
         for task_id, trials in all_results.items():
@@ -201,11 +193,9 @@ class LocalAgentRunner:
                 "deployability": {}
             }
             
-            # Quality metrics (if reference data exists)
             if any("refs" in trial for trial in trials):
                 task_metrics["quality"]["exact_match"] = QualityMetrics.compute_exact_match(trials)
             
-            # Deployability metrics (always available)
             task_metrics["deployability"].update(
                 DeployabilityMetrics.compute_ttft_ms(trials)
             )

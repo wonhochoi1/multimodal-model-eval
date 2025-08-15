@@ -13,14 +13,12 @@ class UtilProbe:
         self.sample_thread = None
         
     def start(self):
-        """Start utilization sampling"""
         self.sampling = True
         self.samples.clear()
         self.sample_thread = threading.Thread(target=self._sample_loop, daemon=True)
         self.sample_thread.start()
     
     def _sample_loop(self):
-        """Background sampling loop"""
         while self.sampling:
             sample = {
                 "timestamp": time.time(),
@@ -35,7 +33,6 @@ class UtilProbe:
 
     
     def _get_util(self) -> float:
-        """Get GPU utilization percentage (local fallbacks)"""
         # Try NVML first
         try:
             import pynvml
@@ -48,7 +45,6 @@ class UtilProbe:
             return psutil.cpu_percent(interval=0.1)
     
     def _get_mem(self) -> float:
-        """Get GPU memory utilization percentage (local fallbacks)"""
         try:
             import pynvml
             pynvml.nvmlInit()
@@ -56,16 +52,12 @@ class UtilProbe:
             mem_info = pynvml.nvmlDeviceGetMemoryInfo(handle)
             return (mem_info.used / mem_info.total) * 100.0
         except:
-            # if not, calculate virtual memory utilization
             return psutil.virtual_memory().percent
     
     def sample(self):
-        """Take a single sample manually (in addition to background sampling)"""
         if self.sampling:
-            # If background sampling is active, just return - samples are being collected
             return
         
-        # If background sampling is not active, take a manual sample
         try:
             sample = {
                 "timestamp": time.time(),
@@ -80,7 +72,6 @@ class UtilProbe:
             print(f"Util probe manual sampling error: {e}")
     
     def stop(self) -> Dict[str, Any]:
-        """Stop sampling and return aggregated metrics"""
         self.sampling = False
         if self.sample_thread:
             self.sample_thread.join(timeout=1.0)
@@ -95,7 +86,6 @@ class UtilProbe:
                 "gpu_util_pct_max": 0.0
             }
         
-        # Aggregate samples
         cpu_utils = [s["cpu_util_pct"] for s in self.samples]
         ram_utils = [s["ram_util_pct"] for s in self.samples]
         ram_mb = [s["ram_mb"] for s in self.samples]
