@@ -39,23 +39,16 @@ python -m orchestrator.cli results
 
 ## Implementation Status
 
-###**Implemented**
-- Core schemas and data models
-- Local agent runner with real hardware probes
-- HuggingFace VLM adapter with automatic model detection
+### Implemented
+- Agent runner with hardware probes
 - Latency, memory, power, and utilization probes
 - Quality and deployability metrics computation
-- CLI with suite execution
-- Jupyter notebook interface
-- Results storage and organization
 
 ### TO-DO
-- Edge device deployment (Jetson, etc.)
+- On-device deployment (Jetson, etc.)
 - Remote agent communication
 - Advanced video/audio processing
 - Custom model format support
-- Distributed evaluation
-- Advanced reporting and visualization
 
 ## Supported Models
 
