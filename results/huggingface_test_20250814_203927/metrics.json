@@ -1,0 +1,42 @@
+{
+  "vlm_captioning": {
+    "quality": {},
+    "deployability": {
+      "ttft_ms_avg": 1.8230438232421875,
+      "ttft_ms_p50": 1.8570423126220703,
+      "ttft_ms_p95": 2.5000572204589844,
+      "e2e_ms_avg": 167.55046844482422,
+      "e2e_ms_p50": 162.19019889831543,
+      "e2e_ms_p95": 184.15594100952148,
+      "tps_avg": 22.9459694573698,
+      "tps_p50": 24.19652337198016,
+      "tps_p95": 24.951465955972242,
+      "power_w_avg": 0.0,
+      "power_w_max": 0.0,
+      "memory_mb_avg": 15230.49375,
+      "memory_mb_max": 15264.3125,
+      "gpu_util_pct_avg": 10.86,
+      "cpu_util_pct_avg": 18.32
+    }
+  },
+  "vlm_question_answering": {
+    "quality": {},
+    "deployability": {
+      "ttft_ms_avg": 1.8095016479492188,
+      "ttft_ms_p50": 1.8200874328613281,
+      "ttft_ms_p95": 1.8439292907714844,
+      "e2e_ms_avg": 166.26529693603516,
+      "e2e_ms_p50": 164.66784477233887,
+      "e2e_ms_p95": 172.0907688140869,
+      "tps_avg": 23.15669408650015,
+      "tps_p50": 24.564437442531933,
+      "tps_p95": 24.71621139845078,
+      "power_w_avg": 0.0,
+      "power_w_max": 0.0,
+      "memory_mb_avg": 15263.95625,
+      "memory_mb_max": 15266.796875,
+      "gpu_util_pct_avg": 7.28,
+      "cpu_util_pct_avg": 16.16
+    }
+  }
+}

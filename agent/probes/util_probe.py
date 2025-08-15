@@ -27,14 +27,14 @@ class UtilProbe:
                 "cpu_util_pct": psutil.cpu_percent(interval=0.1),
                 "ram_util_pct": psutil.virtual_memory().percent,
                 "ram_mb": psutil.virtual_memory().used / (1024 * 1024),
-                "gpu_util_pct": self._get_gpu_util(),
-                "gpu_mem_pct": self._get_gpu_mem()
+                "gpu_util_pct": self._get_util(),
+                "gpu_mem_pct": self._get_mem()
             }
             self.samples.append(sample)
             time.sleep(1.0 / self.sample_rate_hz)
 
     
-    def _get_gpu_util(self) -> float:
+    def _get_util(self) -> float:
         """Get GPU utilization percentage (local fallbacks)"""
         # Try NVML first
         try:
@@ -43,15 +43,11 @@ class UtilProbe:
             handle = pynvml.nvmlDeviceGetHandleByIndex(0)
             util = pynvml.nvmlDeviceGetUtilizationRates(handle)
             return util.gpu
-        except ImportError:
-            pass
-        except Exception:
-            pass
-        
-        # Fallback: simulate GPU usage for local testing
-        return 25.0 + (time.time() % 20)  # Simulated varying GPU usage
+        except:
+            # if not, calculate cpu utilization
+            return psutil.cpu_percent(interval=0.1)
     
-    def _get_gpu_mem(self) -> float:
+    def _get_mem(self) -> float:
         """Get GPU memory utilization percentage (local fallbacks)"""
         try:
             import pynvml
@@ -59,13 +55,9 @@ class UtilProbe:
             handle = pynvml.nvmlDeviceGetHandleByIndex(0)
             mem_info = pynvml.nvmlDeviceGetMemoryInfo(handle)
             return (mem_info.used / mem_info.total) * 100.0
-        except ImportError:
-            pass
-        except Exception:
-            pass
-        
-        # Fallback: simulate GPU memory usage
-        return 30.0 + (time.time() % 15)
+        except:
+            # if not, calculate virtual memory utilization
+            return psutil.virtual_memory().percent
     
     def sample(self):
         """Take a single sample manually (in addition to background sampling)"""
@@ -80,12 +72,12 @@ class UtilProbe:
                 "cpu_util_pct": psutil.cpu_percent(interval=0.1),
                 "ram_util_pct": psutil.virtual_memory().percent,
                 "ram_mb": psutil.virtual_memory().used / (1024 * 1024),
-                "gpu_util_pct": self._get_gpu_util(),
-                "gpu_mem_pct": self._get_gpu_mem()
+                "gpu_util_pct": self._get_util(),
+                "gpu_mem_pct": self._get_mem()
             }
             self.samples.append(sample)
         except Exception as e:
-            print(f"⚠️  Util probe manual sampling error: {e}")
+            print(f"Util probe manual sampling error: {e}")
     
     def stop(self) -> Dict[str, Any]:
         """Stop sampling and return aggregated metrics"""

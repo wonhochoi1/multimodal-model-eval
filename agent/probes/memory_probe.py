@@ -36,13 +36,9 @@ class MemoryProbe:
             handle = pynvml.nvmlDeviceGetHandleByIndex(0)
             mem_info = pynvml.nvmlDeviceGetMemoryInfo(handle)
             return mem_info.used / (1024 * 1024)
-        except ImportError:
-            pass
-        except Exception:
-            pass
-        
-        # Fallback: simulate VRAM usage for local testing
-        return 512.0 + (time.time() % 256)  # Simulated VRAM usage
+        except:
+            # case 2: simulate CPU VRAM usage for local testing
+            return psutil.virtual_memory().used / (1024 * 1024) # Simulated VRAM usage
     
     def sample(self):
         """Sample current memory usage"""

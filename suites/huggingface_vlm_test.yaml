@@ -3,7 +3,7 @@ device: local
 description: "Test VLM models from Hugging Face Hub"
 
 adapter_config:
-  model_name: "deepseek-ai/deepseek-vl-7b-base"  # or any other HF model
+  model_name: "llava-hf/llava-v1.6-34b-hf"  # or any other HF model
   precision: "fp32"  # or "fp16" for GPU
   max_new_tokens: 50
   temperature: 0.7

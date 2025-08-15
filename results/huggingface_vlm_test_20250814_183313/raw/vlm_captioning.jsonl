@@ -1,5 +1,0 @@
-{"trial_id": "be56510d-8c6b-42a8-b7d7-33bdf15eee60", "platform": "macos", "error": "Model not loaded", "status": "error", "timing": {"t_start": 1755210798.985173, "t_end": 1755210799.595448}, "task_id": "vlm_captioning", "repeat": 0}
-{"trial_id": "9d21e37b-8484-4b22-9733-146b823dd639", "platform": "macos", "error": "Model not loaded", "status": "error", "timing": {"t_start": 1755210799.597219, "t_end": 1755210800.215466}, "task_id": "vlm_captioning", "repeat": 1}
-{"trial_id": "ee08793e-7867-476a-abb3-4d216e025740", "platform": "macos", "error": "Model not loaded", "status": "error", "timing": {"t_start": 1755210800.21924, "t_end": 1755210800.836234}, "task_id": "vlm_captioning", "repeat": 2}
-{"trial_id": "34c434a4-e15e-4482-9721-0d4e6860e971", "platform": "macos", "error": "Model not loaded", "status": "error", "timing": {"t_start": 1755210800.8391838, "t_end": 1755210801.453567}, "task_id": "vlm_captioning", "repeat": 3}
-{"trial_id": "4cde1fa0-3a33-4a1c-8aed-0d4b4eeb36cd", "platform": "macos", "error": "Model not loaded", "status": "error", "timing": {"t_start": 1755210801.45588, "t_end": 1755210802.072066}, "task_id": "vlm_captioning", "repeat": 4}

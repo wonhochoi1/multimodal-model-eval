@@ -1,5 +1,0 @@
-{"trial_id": "8642d82b-334f-420f-8e79-fec3e2f60368", "platform": "macos", "error": "Model not loaded", "status": "error", "timing": {"t_start": 1755210947.9580202, "t_end": 1755210948.575008}, "task_id": "vlm_captioning", "repeat": 0}
-{"trial_id": "3452e33a-b515-409c-9cc8-e5035e7de0dd", "platform": "macos", "error": "Model not loaded", "status": "error", "timing": {"t_start": 1755210948.577918, "t_end": 1755210949.192829}, "task_id": "vlm_captioning", "repeat": 1}
-{"trial_id": "0afa2e68-ec89-45a1-aee9-d24a480716ce", "platform": "macos", "error": "Model not loaded", "status": "error", "timing": {"t_start": 1755210949.194127, "t_end": 1755210949.809783}, "task_id": "vlm_captioning", "repeat": 2}
-{"trial_id": "d6b899d3-c33f-4e5b-a1fc-735dc413049b", "platform": "macos", "error": "Model not loaded", "status": "error", "timing": {"t_start": 1755210949.81147, "t_end": 1755210950.427642}, "task_id": "vlm_captioning", "repeat": 3}
-{"trial_id": "1570f03e-03b4-4d85-9b2e-fba05a625b63", "platform": "macos", "error": "Model not loaded", "status": "error", "timing": {"t_start": 1755210950.4316642, "t_end": 1755210951.039767}, "task_id": "vlm_captioning", "repeat": 4}
