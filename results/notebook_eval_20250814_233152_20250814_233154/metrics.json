@@ -1,0 +1,22 @@
+{
+  "vlm_caption_task": {
+    "quality": {},
+    "deployability": {
+      "ttft_ms_avg": 0.9390830993652344,
+      "ttft_ms_p50": 1.0008811950683594,
+      "ttft_ms_p95": 1.2202262878417969,
+      "e2e_ms_avg": 158.88423919677734,
+      "e2e_ms_p50": 159.24620628356934,
+      "e2e_ms_p95": 165.56215286254883,
+      "tps_avg": 24.08911085977567,
+      "tps_p50": 24.476813926379382,
+      "tps_p95": 27.206634460860865,
+      "power_w_avg": 0.0,
+      "power_w_max": 0.0,
+      "memory_mb_avg": 14782.89375,
+      "memory_mb_max": 14794.96875,
+      "gpu_util_pct_avg": 18.42,
+      "cpu_util_pct_avg": 19.78
+    }
+  }
+}

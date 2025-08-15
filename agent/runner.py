@@ -22,7 +22,6 @@ class LocalAgentRunner:
         self.util_probe = UtilProbe(sample_rate_hz)
         self.memory_probe = MemoryProbe()
         
-        # Local-specific settings
         self.platform = self._detect_platform()
     
     def _detect_platform(self) -> str:
@@ -49,105 +48,61 @@ class LocalAgentRunner:
         
         t_start = time.time()
         
-        try:
-            # Run inference pipeline with staging
-            with self.latency_probe.stage("prepare"):
-                prepared = self.adapter.prepare(sample)
-            
-            with self.latency_probe.stage("infer"):
-                # Sample memory and util during inference
-                self.memory_probe.sample()
-                self.util_probe.sample()
-                
-                raw_output = self.adapter.infer(prepared)
-            
-            with self.latency_probe.stage("postprocess"):
-                output = self.adapter.postprocess(raw_output)
-            
-            t_end = time.time()
-            
-            # Stop all probes
-            latency_metrics = self.latency_probe.stop()
-            power_metrics = self.power_probe.stop()
-            util_metrics = self.util_probe.stop()
-            memory_metrics = self.memory_probe.stop()
-            
-            # Build trial record
-            trial_record = {
-                "trial_id": trial_id,
-                "platform": self.platform,
-                "input": sample,
-                "output": output,
-                "timing": {
-                    "t_start": t_start,
-                    "t_end": t_end,
-                    "t_first": output.get("timing", {}).get("t_first", t_end),
-                    "stages": latency_metrics["stages"],
-                    "total_ms": latency_metrics["total_ms"]
-                },
-                "resources": {
-                    "memory": memory_metrics,
-                    "power": power_metrics,
-                    "utilization": util_metrics
-                },
-                "config": config
-            }
-            
-            print(f"  Trial completed: {trial_record['timing']['total_ms']:.1f}ms")
-            return trial_record
-            
-        except Exception as e:
-            print(f"  Trial failed: {e}")
-            # Stop probes even on error
-            self.latency_probe.stop()
-            self.power_probe.stop()
-            self.util_probe.stop()
-            self.memory_probe.stop()
-            
-            return {
-                "trial_id": trial_id,
-                "platform": self.platform,
-                "error": str(e),
-                "status": "error",
-                "timing": {"t_start": t_start, "t_end": time.time()}
-            }
-    
-    def warmup(self, config: Dict[str, Any], num_warmups: int = 3):
-        """Run warmup trials to stabilize system (optimized for local)"""
-        print(f"Running {num_warmups} warmup trials...")
+
+        with self.latency_probe.stage("prepare"):
+            prepared = self.adapter.prepare(sample)
         
-        # Create a simple dummy sample for warmup
-        dummy_sample = {
-            "id": "warmup",
-            "image": "dummy.jpg",
-            "prompt": "Warmup prompt"
+        with self.latency_probe.stage("infer"):
+            self.memory_probe.sample()
+            self.util_probe.sample()
+            
+            raw_output = self.adapter.infer(prepared)
+        
+        with self.latency_probe.stage("postprocess"):
+            output = self.adapter.postprocess(raw_output)
+        
+        t_end = time.time()
+        
+        latency_metrics = self.latency_probe.stop()
+        power_metrics = self.power_probe.stop()
+        util_metrics = self.util_probe.stop()
+        memory_metrics = self.memory_probe.stop()
+        
+        trial_record = {
+            "trial_id": trial_id,
+            "platform": self.platform,
+            "input": sample,
+            "output": output,
+            "timing": {
+                "t_start": t_start,
+                "t_end": t_end,
+                "t_first": output.get("timing", {}).get("t_first", t_end),
+                "stages": latency_metrics["stages"],
+                "total_ms": latency_metrics["total_ms"]
+            },
+            "resources": {
+                "memory": memory_metrics,
+                "power": power_metrics,
+                "utilization": util_metrics
+            },
+            "config": config
         }
         
-        for i in range(num_warmups):
-            print(f"  Warmup {i+1}/{num_warmups}")
-            self.run_trial(dummy_sample, config)
-            time.sleep(0.2)  # Brief pause between warmups
-        
-        print("Warmup completed")
+        print(f"  Trial completed: {trial_record['timing']['total_ms']:.1f}ms")
+        return trial_record
+            
+    
     
     def run_suite(self, suite_config: Dict[str, Any], output_dir: Path) -> Dict[str, Any]:
         """Run a complete evaluation suite locally"""
         output_dir.mkdir(parents=True, exist_ok=True)
         
-        
-        # Warmup phase
-        if suite_config.get("run", {}).get("warmup", 0) > 0:
-            self.warmup(suite_config.get("adapter_config", {}), 
-                       suite_config.get("run", {}).get("warmup", 3))
-        
-        # Execute tasks
         all_results = {}
         for task in suite_config.get("tasks", []):
             print(f"\nTask: {task['id']}")
             task_results = self._run_task(task, suite_config, output_dir)
             all_results[task["id"]] = task_results
         
-        # Save results
         self._save_results(all_results, output_dir)
         
         print(f"\n Results saved to {output_dir}")
@@ -159,10 +114,8 @@ class LocalAgentRunner:
         task_id = task["id"]
         repeats = suite_config.get("run", {}).get("repeats", 1)
         
-        # For local testing, create synthetic samples
         samples = self._create_synthetic_samples(task, repeats)
         
-        # Run trials
         trials = []
         for i, sample in enumerate(samples):
             print(f"  Trial {i+1}/{len(samples)}")

@@ -16,15 +16,6 @@ ADAPTER_REGISTRY: Dict[str, Type[Adapter]] = {
 }
 
 def get_adapter(config: Dict) -> Adapter:
-    """
-    Create and return an adapter based on the configuration.
-    
-    Args:
-        config: Suite configuration containing adapter_config
-        
-    Returns:
-        Configured adapter instance
-    """
     adapter_config = config.get("adapter_config", {})
     
     # Determine adapter type from config
@@ -51,9 +42,8 @@ def get_adapter(config: Dict) -> Adapter:
     # Load the adapter with configuration
     try:
         adapter.load(adapter_config)
-        print(f"✅ Loaded adapter: {adapter_class.__name__} with config: {adapter_config}")
+        print(f"Loaded adapter: {adapter_class.__name__} with config: {adapter_config}")
     except Exception as e:
-        print(f"❌ Failed to load adapter {adapter_class.__name__}: {e}")
-        # Continue anyway - some adapters might work without explicit loading
+        print(f"Failed to load adapter {adapter_class.__name__}: {e}")
     
     return adapter

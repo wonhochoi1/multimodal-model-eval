@@ -27,7 +27,7 @@ try:
         __version__ as _tf_version,
     )
     HAS_TRANSFORMERS = True
-except Exception:  # pragma: no cover
+except Exception: 
     HAS_TRANSFORMERS = False
     _tf_version = "0.0.0"
     AutoConfig = AutoModelForCausalLM = AutoModel = AutoProcessor = AutoTokenizer = TextIteratorStreamer = None
@@ -35,12 +35,11 @@ except Exception:  # pragma: no cover
 try:
     from PIL import Image
     HAS_PIL = True
-except Exception:  # pragma: no cover
+except Exception:  
     HAS_PIL = False
     Image = None
 
-# Project adapter interface
-from agent.adapters.base import Adapter, TokenCB  # type: ignore
+from agent.adapters.base import Adapter, TokenCB  
 
 
 def _now() -> float:
@@ -53,10 +52,8 @@ from transformers.modeling_utils import PreTrainedModel
 from transformers import AutoConfig, AutoModel, AutoModelForCausalLM
 
 def _issubclass_safe(obj, base):
-    try:
-        return inspect.isclass(obj) and issubclass(obj, base)
-    except Exception:
-        return False
+    return inspect.isclass(obj) and issubclass(obj, base)
+
 
 def _walk_submodules(root_mod) -> Iterable[object]:
     """Yield the root module and all importable submodules (best-effort)."""
@@ -65,11 +62,7 @@ def _walk_submodules(root_mod) -> Iterable[object]:
         prefix = root_mod.__name__ + "."
         for m in pkgutil.walk_packages(root_mod.__path__, prefix):
             name = m.name
-            try:
-                yield importlib.import_module(name)
-            except Exception:
-                # Ignore submodules that fail to import
-                continue
+            yield importlib.import_module(name)
 
 def _auto_register_transformers_types(preloaded_module_names: Iterable[str]) -> None:
     """
@@ -81,26 +74,16 @@ def _auto_register_transformers_types(preloaded_module_names: Iterable[str]) -> 
         mod = importlib.import_module(mod_name)
         for sub in _walk_submodules(mod):
             for _, obj in inspect.getmembers(sub, inspect.isclass):
-                # Register config by model_type
                 if _issubclass_safe(obj, PretrainedConfig):
                     model_type = getattr(obj, "model_type", None)
                     if model_type:
-                        try:
-                            AutoConfig.register(model_type, obj)
-                        except Exception:
-                            pass
-                # Register model heads by config_class
+                        AutoConfig.register(model_type, obj)
+
                 if _issubclass_safe(obj, PreTrainedModel):
                     cfg_cls = getattr(obj, "config_class", None)
                     if cfg_cls:
-                        try:
-                            AutoModel.register(cfg_cls, obj)
-                        except Exception:
-                            pass
-                        try:
-                            AutoModelForCausalLM.register(cfg_cls, obj)
-                        except Exception:
-                            pass
+                        AutoModel.register(cfg_cls, obj)
+                        AutoModelForCausalLM.register(cfg_cls, obj)
 
 class HuggingFaceVLMAdapter(Adapter):
     """
@@ -127,8 +110,6 @@ class HuggingFaceVLMAdapter(Adapter):
         self.inference_method: Optional[str] = None
         self._min_tf = "4.54.0"
 
-    # ---------- Public Adapter API ----------
-
     def load(self, config: Dict[str, Any]):
         """
         Load any HF multimodal checkpoint that either:
@@ -147,7 +128,6 @@ class HuggingFaceVLMAdapter(Adapter):
         if not model_name:
             raise ValueError("config.model_name is required")
 
-        # 0) Optionally import vendor modules up front (generic mechanism)
         for mod in config.get("preload_modules", []) or []:
             importlib.import_module(mod)
         
@@ -163,7 +143,7 @@ class HuggingFaceVLMAdapter(Adapter):
 
         self.model_info = self._discover_model_interface(model_name)
 
-        # 2) load model
+        # load model
         load_kwargs: Dict[str, Any] = dict(trust_remote_code=True, torch_dtype=torch_dtype)
         if device_map:
             load_kwargs["device_map"] = device_map
@@ -174,7 +154,6 @@ class HuggingFaceVLMAdapter(Adapter):
         else:
             self.model = AutoModel.from_pretrained(model_name, **load_kwargs)
 
-        # 3) load processor & tokenizer (processor-first when present)
         if self.model_info["has_auto_processor"]:
             self.processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
 
@@ -187,7 +166,7 @@ class HuggingFaceVLMAdapter(Adapter):
         if getattr(self.tokenizer, "pad_token", None) is None and getattr(self.tokenizer, "eos_token", None) is not None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
         
-        # 4) determine strategy from runtime attributes
+        #inference strategy
         interface = {
             "has_generate": hasattr(self.model, "generate"),
             "has_language_model": hasattr(self.model, "language_model"),
@@ -196,7 +175,6 @@ class HuggingFaceVLMAdapter(Adapter):
         }
         self.inference_method = self._determine_inference_strategy(interface)
 
-        # respect device if no device_map
         if self.device == "cuda" and not hasattr(self.model, "hf_device_map"):
             self.model = self.model.to(self.device)
 
@@ -295,7 +273,7 @@ class HuggingFaceVLMAdapter(Adapter):
         if interface.get("has_generate"):
             return "standard_generate"     # vanilla .generate path
         if "forward" in interface.get("attributes", []):
-            return "forward_pass"          # last resort
+            return "forward_pass" 
         raise RuntimeError(f"Model has no usable inference methods. Available: {interface['attributes']}")
 
     ## INFERENCE LOGIC

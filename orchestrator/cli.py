@@ -40,15 +40,13 @@ def run(suite: Path, out: Optional[Path] = typer.Option(None, help="Custom outpu
     
     typer.echo(f"Running suite: {cfg.get('name', suite.stem)}")
     
-    # Use local agent runner
+    # local agent runner
     from agent.runner import LocalAgentRunner
     from agent.adapters.registry import get_adapter
     
-    # Create adapter and runner using the registry
     adapter = get_adapter(cfg)
     runner = LocalAgentRunner(adapter)
     
-    # Run the suite locally
     results = runner.run_suite(cfg, out)
 
 
@@ -101,7 +99,6 @@ def results():
         typer.echo("No results directory found")
         return
     
-    # Get all results directories, sorted by modification time
     result_dirs = []
     for item in results_dir.iterdir():
         if item.is_dir() and not item.name.startswith('.'):
@@ -110,12 +107,11 @@ def results():
     if not result_dirs:
         typer.echo("No results found")
         return
-    
-    # Sort by modification time (newest first)
+
     result_dirs.sort(key=lambda x: x[1], reverse=True)
     
-    typer.echo("�� Recent results:")
-    for i, (dir_path, mtime) in enumerate(result_dirs[:10]):  # Show last 10
+    typer.echo("Recent results:")
+    for i, (dir_path, mtime) in enumerate(result_dirs[:10]):  # last 10
         timestamp = datetime.fromtimestamp(mtime).strftime("%Y-%m-%d %H:%M:%S")
         typer.echo(f"  {i+1:2d}. {dir_path.name} ({timestamp})")
     
@@ -130,7 +126,6 @@ def clean():
         typer.echo("No results directory found")
         return
     
-    # Get all results directories, sorted by modification time
     result_dirs = []
     for item in results_dir.iterdir():
         if item.is_dir() and not item.name.startswith('.'):
@@ -140,10 +135,8 @@ def clean():
         typer.echo("No results found")
         return
     
-    # Sort by modification time (newest first)
     result_dirs.sort(key=lambda x: x[1], reverse=True)
     
-    # Keep the last 5 results
     to_keep = result_dirs[:5]
     to_remove = result_dirs[5:]
     
@@ -151,7 +144,7 @@ def clean():
         typer.echo("No old results")
         return
     
-    typer.echo(f"��️  Cleaning {len(to_remove)} old result directories...")
+    typer.echo(f"Cleaning {len(to_remove)} old result directories...")
     
     for dir_path, _ in to_remove:
         try:
@@ -160,8 +153,7 @@ def clean():
             typer.echo(f"  Removed: {dir_path.name}")
         except Exception as e:
             typer.echo(f"  Failed to remove {dir_path.name}: {e}")
-    
-    typer.echo(f"✅ Kept {len(to_keep)} recent results")
+
 
 if __name__ == "__main__":
     app()
